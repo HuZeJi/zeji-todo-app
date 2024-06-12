@@ -1,0 +1,6 @@
+rootProject.name = 'todo-manager'
+include 'todo-manager.web'
+include 'todo-manager.svc'
+include 'todo-manager.repository'
+include 'todo-manager.model'
+
