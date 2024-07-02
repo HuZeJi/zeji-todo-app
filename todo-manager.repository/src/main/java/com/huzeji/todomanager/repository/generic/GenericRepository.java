@@ -1,6 +1,5 @@
 package com.huzeji.todomanager.repository.generic;
 
-import com.huzeji.model.Task;
 import com.huzeji.todomanager.repository.generic.specifications.GenericSpecs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

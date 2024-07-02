@@ -1,33 +1,38 @@
 package com.huzeji.rest;
 
-import com.huzeji.model.Task;
-import com.huzeji.todomanager.svc.TaskSvc;
+import com.huzeji.model.dto.TaskDto;
+import com.huzeji.todomanager.svc.TaskManagementSvc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping( "/v1/tasks" )
-public class TaskRest {
+import java.util.List;
 
-    @Autowired private TaskSvc taskSvc;
+@RestController
+@RequestMapping( "/secure/v1/tasks" )
+public class TaskRest {
+    @Autowired private TaskManagementSvc taskManager;
 
     @PostMapping()
-    public Task createTask( @RequestBody Task task ) {
-        return taskSvc.createTask( task );
+    public TaskDto createTask(@RequestBody TaskDto task, @RequestHeader(value = "Authorization") String authorizationHeader) {
+        return taskManager.createTask( task, authorizationHeader );
     }
 
-    // TODO: improve error output
-    @PatchMapping( "/{taskId}/{completeAction}" )
-    public Task completeTask(
-            @PathVariable( "taskId" ) Long taskId,
-            @PathVariable( "completeAction" ) String completeAction
-    ) throws NoSuchMethodException
-    {
-        return taskSvc.taskAction( taskId, completeAction );
+    @PatchMapping( "/{taskId}/complete")
+    public TaskDto completeTask( @PathVariable( "taskId" ) Long taskId ) {
+        return taskManager.completeTask( taskId );
     }
 
+    @PatchMapping( "/{taskId}/undo-complete")
+    public TaskDto undoCompleteTask( @PathVariable( "taskId" ) Long taskId ) {
+        return taskManager.undoCompleteTask( taskId );
+    }
     @DeleteMapping( "/{taskId}" )
-    public Task deleteTask( @PathVariable( "taskId" ) Long taskId ){
-        return taskSvc.deleteTask( taskId );
+    public TaskDto deleteTask(@PathVariable( "taskId" ) Long taskId ){
+        return taskManager.deleteTask( taskId );
+    }
+
+    @PutMapping( "/{taskId}/tags" )
+    public TaskDto addTags( @RequestBody List<String> tags, @PathVariable( "taskId" ) Long taskId ) {
+        return taskManager.addTags( tags, taskId );
     }
 }

@@ -1,13 +1,14 @@
 package com.huzeji.todomanager.svc;
 
-import com.huzeji.model.Task;
+import com.huzeji.model.TaskEntity;
+import com.huzeji.model.UserEntity;
+import com.huzeji.model.dto.TaskDto;
 import org.springframework.data.domain.Page;
 
 import java.util.Map;
 
 public interface TaskSvc {
-    public Page<Task> getTasks( Map<String, Object> filters);
-    public Task createTask( Task task );
-    public Task deleteTask( Long taskId );
-    public Task taskAction( Long taskId, String action ) throws NoSuchMethodException;
+    Page<TaskEntity> getTasks(Map<String, Object> filters);
+    TaskEntity persistTask(TaskDto task, UserEntity user);
+    TaskEntity persistTask(TaskEntity task);
 }
