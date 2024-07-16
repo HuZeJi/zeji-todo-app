@@ -24,21 +24,25 @@ public class TaskEntity {
 
     @ManyToOne
     @JoinColumn( name = "user_id", nullable = false )
-    @JsonBackReference
-    private UserEntity user;
+    @JsonBackReference( value = "user-task" )
+    private UserEntity owner;
 
     private StatusEnum status = StatusEnum.ACTIVE;
     private LocalDateTime time = LocalDateTime.now();
     @OneToMany( mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.ALL )
-    @JsonManagedReference
+    @JsonManagedReference( value = "task-tag" )
     List<TagEntity> tags;
+
+    @OneToMany( mappedBy = "shared", fetch = FetchType.LAZY, cascade = CascadeType.ALL )
+    @JsonManagedReference( value = "user_task-shared" )
+    List<UserTaskEntity> sharedList;
 
     public TaskEntity(TaskDto task, UserEntity user) {
         this.id = task.getId();
         this.title = task.getTitle();
         this.description = task.getDescription();
         if( task.getIsComplete() != null ) this.isComplete = task.getIsComplete();
-        this.user = user;
+        this.owner = user;
         if( task.getStatus() != null ) this.status = task.getStatus();
         if( task.getTime() != null ) this.time = task.getTime();
     }

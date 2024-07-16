@@ -3,10 +3,12 @@ package com.huzeji.todomanager.svc.impl;
 import com.huzeji.model.TagEntity;
 import com.huzeji.model.TaskEntity;
 import com.huzeji.model.UserEntity;
+import com.huzeji.model.UserTaskEntity;
 import com.huzeji.model.dto.TaskDto;
 import com.huzeji.model.enums.StatusEnum;
 import com.huzeji.todomanager.svc.TaskManagementSvc;
 import com.huzeji.todomanager.svc.TaskSvc;
+import com.huzeji.todomanager.svc.UserSvc;
 import com.huzeji.todomanager.svc.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,18 +16,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class TaskManagementSvcImpl implements TaskManagementSvc {
     @Autowired private JwtUtil jwtUtil;
     @Autowired private TaskSvc taskSvc;
+    @Autowired private UserSvc userSvc;
     @Override
     public TaskDto createTask(TaskDto task, String authorizationHeader) {
         UserEntity user = jwtUtil.getUserFromToken( authorizationHeader );
-        task.setUserId( user.getId() );
+        task.setOwnerId( user.getId() );
         return new TaskDto( taskSvc.persistTask( task, user ) );
     }
 
@@ -68,7 +69,7 @@ public class TaskManagementSvcImpl implements TaskManagementSvc {
     @Override
     public Page<TaskDto> getTasks(Long userId, Map<String, Object> filters) {
         if( filters == null ) filters = new HashMap<>();
-        filters.put( "userId", userId );
+        filters.put( "owner.id", userId );
         Page<TaskEntity> taskPage = taskSvc.getTasks( filters );
         return taskPage.map( TaskDto::new );
     }
@@ -84,5 +85,31 @@ public class TaskManagementSvcImpl implements TaskManagementSvc {
                 .filter( tag -> !task.getTags().stream().map( TagEntity::getName ).toList().contains( tag ) )
                 .forEach( tag -> task.getTags().add( new TagEntity( tag, task ) ) );
         return new TaskDto( taskSvc.persistTask(task) );
+    }
+
+    @Override
+    public TaskDto addShareHolders(List<Long> shareHoldersIdList, Long taskId) {
+        TaskEntity task = getTaskById(taskId);
+        shareHoldersIdList.stream()
+                .distinct()
+                .filter( shareHolderId -> !isShareHolderAlreadyAdded(shareHolderId, task) )
+                .map(this::getShareHolder)
+                .forEach(shareHolder -> task.getSharedList().add(new UserTaskEntity(shareHolder, task)));
+        return new TaskDto(taskSvc.persistTask(task));
+    }
+
+    private Boolean isShareHolderAlreadyAdded(Long shareHolderId, TaskEntity task) {
+        return task.getSharedList().stream().anyMatch(sh -> sh.getShareholder().getId().equals(shareHolderId));
+    }
+
+    private UserEntity getShareHolder(Long shareHolderId) {
+        return Optional.ofNullable(userSvc.get(getShareHoldersFilter(shareHolderId)).getContent().getFirst())
+                .orElseThrow(() -> new NoSuchElementException("User not found with id [" + shareHolderId + "]."));
+    }
+
+    private Map<String, Object> getShareHoldersFilter( Long shareHolder ) {
+        Map<String, Object> userFilter = new HashMap<>();
+        userFilter.put( "id", shareHolder );
+        return userFilter;
     }
 }

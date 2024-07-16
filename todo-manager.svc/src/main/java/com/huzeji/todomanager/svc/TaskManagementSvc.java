@@ -13,4 +13,5 @@ public interface TaskManagementSvc {
     TaskDto deleteTask( Long taskId );
     Page<TaskDto> getTasks(Long userId, Map<String, Object> filters );
     TaskDto addTags( List<String> tags, Long taskId );
+    TaskDto addShareHolders( List<Long> shareHolders, Long taskId );
 }

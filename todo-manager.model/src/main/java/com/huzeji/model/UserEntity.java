@@ -16,8 +16,11 @@ public class UserEntity {
     private String name;
     private String nickname;
     private String password;
-    private StatusEnum status;
-    @OneToMany( mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL )
-    @JsonManagedReference
+    private StatusEnum status = StatusEnum.ACTIVE;
+    @OneToMany( mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL )
+    @JsonManagedReference( value = "user-task" )
     private List<TaskEntity> tasks;
+    @OneToMany( mappedBy = "shareholder", fetch = FetchType.LAZY, cascade = CascadeType.ALL )
+    @JsonManagedReference( value = "user_task-shareholder")
+    private List<UserTaskEntity> shareholders;
 }

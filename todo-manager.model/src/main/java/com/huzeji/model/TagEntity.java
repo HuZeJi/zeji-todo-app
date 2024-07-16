@@ -17,7 +17,7 @@ public class TagEntity {
     private StatusEnum status;
     @ManyToOne
     @JoinColumn( name = "task_id", nullable = false )
-    @JsonBackReference
+    @JsonBackReference( value = "task-tag" )
     private TaskEntity task;
 
     public TagEntity(String name, TaskEntity task) {

@@ -35,4 +35,9 @@ public class TaskRest {
     public TaskDto addTags( @RequestBody List<String> tags, @PathVariable( "taskId" ) Long taskId ) {
         return taskManager.addTags( tags, taskId );
     }
+
+    @PutMapping( "/{taskId}/share-holders" )
+    public TaskDto addShareHolders( @RequestBody List<Long> shareHolders, @PathVariable( "taskId" ) Long taskId ) {
+        return taskManager.addShareHolders( shareHolders, taskId );
+    }
 }

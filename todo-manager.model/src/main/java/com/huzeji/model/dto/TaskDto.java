@@ -16,18 +16,23 @@ public class TaskDto {
     private String title;
     private String description;
     private Boolean isComplete ;
-    private Long userId;
+    private Long ownerId;
     private StatusEnum status;
     private LocalDateTime time;
     private List<String> tags;
+    private List<ShareHolderDto> shareHolders;
     public TaskDto(TaskEntity task ) {
         this.id = task.getId();
         this.title = task.getTitle();
         this.description = task.getDescription();
         this.isComplete = task.getIsComplete();
-        this.userId = task.getUser().getId();
+        this.ownerId = task.getOwner().getId();
         this.status = task.getStatus();
         this.time = task.getTime();
+
+        if( task.getSharedList() != null ) {
+            this.shareHolders = task.getSharedList().stream().map(ShareHolderDto::new).toList();
+        }
 
         if( task.getTags() != null )
             this.tags = task.getTags().stream().map(TagEntity::getName).toList();
