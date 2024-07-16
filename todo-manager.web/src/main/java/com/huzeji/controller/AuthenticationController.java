@@ -1,4 +1,4 @@
-package com.huzeji.rest;
+package com.huzeji.controller;
 
 import com.huzeji.model.dto.AuthenticationRequest;
 import com.huzeji.todomanager.svc.util.JwtUtil;
@@ -9,9 +9,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping( "/public/api/v1" )
 public class AuthenticationController {
 
     @Autowired

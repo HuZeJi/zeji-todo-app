@@ -1,4 +1,4 @@
-package com.huzeji.rest;
+package com.huzeji.controller;
 
 import com.huzeji.model.dto.TaskDto;
 import com.huzeji.todomanager.svc.TaskManagementSvc;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping( "/secure/v1/tasks" )
+@RequestMapping( "/secure/api/v1/tasks" )
 public class TaskRest {
     @Autowired private TaskManagementSvc taskManager;
 

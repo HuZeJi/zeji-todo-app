@@ -1,4 +1,4 @@
-package com.huzeji.rest;
+package com.huzeji.controller;
 
 import com.huzeji.model.UserEntity;
 import com.huzeji.todomanager.svc.GenericCrudSvc;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController()
-@RequestMapping( "/public/v1/users" )
+@RequestMapping( "/public/api/v1/users" )
 public class PublicUserRest extends GenericRest<UserEntity, Long>{
 
     @Autowired private UserSvc userSvc;

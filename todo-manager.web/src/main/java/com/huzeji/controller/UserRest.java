@@ -1,4 +1,4 @@
-package com.huzeji.rest;
+package com.huzeji.controller;
 
 import com.huzeji.model.UserEntity;
 import com.huzeji.model.dto.TaskDto;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController()
-@RequestMapping( "/secure/v1/users" )
+@RequestMapping( "/secure/api/v1/users" )
 public class UserRest extends GenericRest<UserEntity, Long>{
 
     @Autowired private UserSvc userSvc;

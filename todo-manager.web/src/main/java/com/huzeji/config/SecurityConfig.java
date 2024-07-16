@@ -47,12 +47,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/authenticate", "/public/**")
+                                .requestMatchers("/authenticate", "/public/**", "/v3/api-docs/**", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) );
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

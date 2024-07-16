@@ -1,4 +1,4 @@
-package com.huzeji.rest;
+package com.huzeji.controller;
 
 import com.huzeji.todomanager.svc.GenericCrudSvc;
 import org.springframework.data.domain.Page;
