@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'jacoco'
 }
 
 bootJar{
@@ -21,6 +22,7 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'jacoco'
 
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -54,9 +56,37 @@ subprojects {
 
 	tasks.named('test') {
 		useJUnitPlatform()
+		finalizedBy 'jacocoTestReport' // Ensure that jacocoTestReport runs after tests
 	}
 
 	tasks.named( 'bootJar' ) {
 		mainClass = 'com.huzeji.TodoManagerApplication'
+	}
+
+	jacocoTestReport {
+		dependsOn test // Ensure tests are run before generating the report
+		reports {
+			xml.required = true
+			csv.required = false
+			html.required = true // Ensure HTML report is generated
+			html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+		}
+	}
+
+	task jacocoRootReport(type: JacocoReport) {
+		dependsOn subprojects.test // Ensure all tests are run first
+
+		additionalSourceDirs.setFrom(files(subprojects.sourceSets.main.allSource.srcDirs))
+		sourceDirectories.setFrom(files(subprojects.sourceSets.main.allSource.srcDirs))
+		classDirectories.setFrom(files(subprojects.sourceSets.main.output))
+
+		executionData.setFrom(files(subprojects.jacocoTestReport.executionData))
+
+		reports {
+			xml.required = true
+			csv.required = false
+			html.required = true
+			html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+		}
 	}
 }
