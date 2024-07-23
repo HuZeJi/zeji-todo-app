@@ -2,8 +2,8 @@ package com.huzeji.todomanager.repository;
 
 import com.huzeji.model.TaskEntity;
 import com.huzeji.todomanager.repository.generic.GenericRepository;
-import org.springframework.stereotype.Repository;
+import org.javers.spring.annotation.JaversSpringDataAuditable;
 
-@Repository
+@JaversSpringDataAuditable
 public interface TaskRepository extends GenericRepository<TaskEntity, Long> {
 }
