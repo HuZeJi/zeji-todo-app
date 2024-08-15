@@ -78,12 +78,14 @@ public class TaskManagementSvcImpl implements TaskManagementSvc {
     public TaskDto addTags( List<String> tags, Long taskId ) {
         TaskEntity task = getTaskById( taskId );
 
-        if( task.getTags().size() > 5 )
+        if( ( task.getTags().size() + tags.size() ) > 5 )
             throw new ResponseStatusException( HttpStatus.BAD_REQUEST, "Task can have at most 5 tags." );
 
+        List<String> existingTags = task.getTags().stream().map( TagEntity::getName ).toList();
         tags.stream()
-                .filter( tag -> !task.getTags().stream().map( TagEntity::getName ).toList().contains( tag ) )
-                .forEach( tag -> task.getTags().add( new TagEntity( tag, task ) ) );
+                .filter( tag -> !existingTags.contains( tag ) )
+                .map( tag -> new TagEntity( tag, task ) )
+                .forEach( tag -> task.getTags().add( tag ) );
         return new TaskDto( taskSvc.persistTask(task) );
     }
 

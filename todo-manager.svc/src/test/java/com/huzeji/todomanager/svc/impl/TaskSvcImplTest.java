@@ -12,7 +12,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,9 +29,28 @@ class TaskSvcImplTest {
 
     @Test
     void testGetTasksCaseOk() {
-        Page<TaskEntity> page = new PageImpl<>( new ArrayList<>() );
+        TaskEntity task = new TaskEntity();
+        List<TaskEntity> tasks = Collections.singletonList( task );
+        Page<TaskEntity> page = new PageImpl<>( tasks );
         when( repository.getPage( anyMap(), any( Pageable.class ) ) ).thenReturn( page );
-        Page<TaskEntity> result = taskSvc.getTasks( new HashMap<>() );
-        assertNotNull( result );
+
+        Page<TaskEntity> tasksRetrieved = taskSvc.getTasks( new HashMap<>() );
+
+        Integer result = tasksRetrieved.getSize();
+        Integer expected = 1;
+        assertEquals( expected, result );
+    }
+
+    @Test
+    void testGetTasksCaseNoDataFound() {
+        List<TaskEntity> tasks = new ArrayList<>();
+        Page<TaskEntity> page = new PageImpl<>( tasks );
+        when( repository.getPage( anyMap(), any( Pageable.class ) ) ).thenReturn( page );
+
+        Page<TaskEntity> tasksRetrieved = taskSvc.getTasks( new HashMap<>() );
+
+        Integer result = tasksRetrieved.getSize();
+        Integer expected = 0;
+        assertEquals( expected, result );
     }
 }

@@ -1,9 +1,8 @@
 package com.huzeji.controller;
 
 import com.huzeji.model.dto.AuditLogDto;
-import com.huzeji.model.dto.TaskDto;
 import com.huzeji.todomanager.svc.AuditSvc;
-import org.javers.core.metamodel.object.CdoSnapshot;
+import io.sentry.Sentry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,5 +15,14 @@ public class AuditController {
     @GetMapping()
     public List<AuditLogDto> getAll() {
         return auditSvc.getAuditLog();
+    }
+
+    @GetMapping( "sentry" )
+    public void testSentry() {
+        try {
+            throw new Exception("This is a test.");
+        } catch (Exception e) {
+            Sentry.captureException(e);
+        }
     }
 }
